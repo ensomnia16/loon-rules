@@ -1,0 +1,30 @@
+name: Sync Rules
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Fetch and filter Global.list
+        run: |
+          curl -s "https://yfamilys.com/rule/Global.list" \
+            | grep -vx "DOMAIN-SUFFIX,com" \
+            > Global.list
+
+      - name: Commit if changed
+        run: |
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
+          git add Global.list
+          git diff --cached --quiet && echo "No changes" && exit 0
+          git commit -m "sync: $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git push
+
