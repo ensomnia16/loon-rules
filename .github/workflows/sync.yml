@@ -17,11 +17,12 @@ jobs:
         run: |
           curl -s \
             -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
+            -H "Accept: text/plain,*/*" \
+            -H "Accept-Language: zh-CN,zh;q=0.9" \
             -H "Referer: https://yfamilys.com/" \
             "https://yfamilys.com/rule/Global.list" \
             | grep -vx "DOMAIN-SUFFIX,com" \
             > Global.list
-
 
       - name: Commit if changed
         run: |
@@ -31,4 +32,3 @@ jobs:
           git diff --cached --quiet && echo "No changes" && exit 0
           git commit -m "sync: $(date -u '+%Y-%m-%d %H:%M UTC')"
           git push
-
