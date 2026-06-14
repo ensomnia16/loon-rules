@@ -1,9 +1,10 @@
 #!name=Misc 杂项分流合集
-#!desc=收纳不便归入其他合集的零散分流规则，当前包含 Twitter(X) 全家桶
+#!desc=收纳无独立合集的零散分流规则：Twitter(X)、Meta 社交、TikTok、Discord、Reddit、Line、Twitch、Pixiv、Wikipedia、GitHub、Speedtest
 #!author=ensomnia16 contributors
 #!homepage=https://github.com/ensomnia16/loon-rules
-#!date=2026-06-14 00:00:00
+#!date=2026-06-14 18:30:00
 #############################################
+# 全部条目统一走 surfboard.ini 的 Misc 策略组（共用一个可选节点，不单独分组）
 
 # Twitter / X
 # 主站 + 短链 + 图片/视频 CDN + 广告/统计 + 开发者站点 + 直播(Periscope/Vine)
@@ -32,3 +33,109 @@ IP-CIDR, 104.244.42.0/24, no-resolve
 IP-CIDR, 192.133.76.0/22, no-resolve
 IP-CIDR, 199.16.156.0/22, no-resolve
 IP-CIDR, 199.59.148.0/22, no-resolve
+
+# Meta 社交全家桶（Instagram / Threads / Facebook / Messenger / WhatsApp）
+# 注意：Meta 系共用 fbcdn.net / facebook.com 等基础设施，放在一起
+DOMAIN-SUFFIX, instagram.com
+DOMAIN-SUFFIX, cdninstagram.com
+DOMAIN-SUFFIX, instagr.am
+DOMAIN-SUFFIX, threads.net
+DOMAIN-SUFFIX, threads.com
+DOMAIN-SUFFIX, facebook.com
+DOMAIN-SUFFIX, facebook.net
+DOMAIN-SUFFIX, fb.com
+DOMAIN-SUFFIX, fb.me
+DOMAIN-SUFFIX, fbcdn.net
+DOMAIN-SUFFIX, fbsbx.com
+DOMAIN-SUFFIX, fbpigeon.com
+DOMAIN-SUFFIX, messenger.com
+DOMAIN-SUFFIX, m.me
+DOMAIN-SUFFIX, whatsapp.com
+DOMAIN-SUFFIX, whatsapp.net
+DOMAIN-SUFFIX, wa.me
+
+# TikTok（国际版；不含抖音 douyin.com / amemv.com，避免误伤国内抖音）
+DOMAIN-SUFFIX, tiktok.com
+DOMAIN-SUFFIX, tiktokv.com
+DOMAIN-SUFFIX, tiktokv.us
+DOMAIN-SUFFIX, tiktokcdn.com
+DOMAIN-SUFFIX, tiktokcdn-us.com
+DOMAIN-SUFFIX, tiktokcdn-eu.com
+DOMAIN-SUFFIX, byteoversea.com
+DOMAIN-SUFFIX, ibytedtos.com
+DOMAIN-SUFFIX, ibyteimg.com
+DOMAIN-SUFFIX, ttwstatic.com
+DOMAIN-SUFFIX, musical.ly
+DOMAIN-SUFFIX, tik-tokapi.com
+
+# Discord
+DOMAIN-SUFFIX, discord.com
+DOMAIN-SUFFIX, discord.gg
+DOMAIN-SUFFIX, discord.media
+DOMAIN-SUFFIX, discord.dev
+DOMAIN-SUFFIX, discordapp.com
+DOMAIN-SUFFIX, discordapp.net
+DOMAIN-SUFFIX, discordcdn.com
+DOMAIN-SUFFIX, discordstatus.com
+
+# Reddit
+DOMAIN-SUFFIX, reddit.com
+DOMAIN-SUFFIX, redd.it
+DOMAIN-SUFFIX, redditstatic.com
+DOMAIN-SUFFIX, redditmedia.com
+DOMAIN-SUFFIX, redditinc.com
+
+# Line
+DOMAIN-SUFFIX, line.me
+DOMAIN-SUFFIX, line-apps.com
+DOMAIN-SUFFIX, line-apps-beta.com
+DOMAIN-SUFFIX, line-scdn.net
+DOMAIN-SUFFIX, line-cdn.net
+DOMAIN-SUFFIX, line.naver.jp
+
+# Twitch
+DOMAIN-SUFFIX, twitch.tv
+DOMAIN-SUFFIX, twitchcdn.net
+DOMAIN-SUFFIX, twitchsvc.net
+DOMAIN-SUFFIX, ttvnw.net
+DOMAIN-SUFFIX, jtvnw.net
+
+# Pixiv（含 FANBOX / pximg CDN / pixivision）
+DOMAIN-SUFFIX, pixiv.net
+DOMAIN-SUFFIX, pixiv.org
+DOMAIN-SUFFIX, pximg.net
+DOMAIN-SUFFIX, pixiv.help
+DOMAIN-SUFFIX, pixivision.net
+DOMAIN-SUFFIX, fanbox.cc
+DOMAIN-SUFFIX, booth.pm
+
+# Wikipedia / Wikimedia 全家桶
+DOMAIN-SUFFIX, wikipedia.org
+DOMAIN-SUFFIX, wikimedia.org
+DOMAIN-SUFFIX, wikidata.org
+DOMAIN-SUFFIX, wikinews.org
+DOMAIN-SUFFIX, wiktionary.org
+DOMAIN-SUFFIX, wikibooks.org
+DOMAIN-SUFFIX, wikiquote.org
+DOMAIN-SUFFIX, wikisource.org
+DOMAIN-SUFFIX, wikiversity.org
+DOMAIN-SUFFIX, wikivoyage.org
+DOMAIN-SUFFIX, mediawiki.org
+DOMAIN-SUFFIX, wikimediafoundation.org
+
+# GitHub（Copilot 域名已在 AI 合集，优先级更高，这里不会抢走）
+DOMAIN-SUFFIX, github.com
+DOMAIN-SUFFIX, github.io
+DOMAIN-SUFFIX, github.dev
+DOMAIN-SUFFIX, githubusercontent.com
+DOMAIN-SUFFIX, githubassets.com
+DOMAIN-SUFFIX, githubapp.com
+DOMAIN-SUFFIX, github.community
+DOMAIN-SUFFIX, ghcr.io
+DOMAIN-SUFFIX, git.io
+
+# Speedtest（Ookla，走代理可测代理真实速度）
+DOMAIN-SUFFIX, speedtest.net
+DOMAIN-SUFFIX, speedtestcustom.com
+DOMAIN-SUFFIX, ooklaserver.net
+DOMAIN-SUFFIX, ookla.com
