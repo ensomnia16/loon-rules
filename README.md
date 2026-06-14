@@ -17,6 +17,7 @@
 - 地区组里 `TW` 和 `Mainland` 已拆开：`TW` 只匹配 🇹🇼/Taiwan/台湾/台北等；🇨🇳/中国/北京/上海等归到 `Mainland`
 - 设置 `overwrite_original_rules=true`，丢弃机场默认规则
 - AI 服务先引入本仓库的 [`AI.list`](./AI.list)（含 Apple Intelligence、JetBrains AI、Anthropic IP-CIDR 等条目），再追加内联补充域名，统一走 `OpenAI` 组，匹配优先级最高
+- Misc 杂项走本仓库的 [`Misc.list`](./Misc.list)（目前收纳 Twitter/X 全家桶），统一走 `Misc` 组
 - 流媒体 / 应用走 [blackmatrix7/ios_rule_script](https://github.com/blackmatrix7/ios_rule_script) 的 Surge 列表
 - 直连：`Lan.list` + `ChinaMax.list` + `GEOIP,CN`
 - 兜底：`FINAL` → `Final` 组（默认走 `Proxies`）
@@ -37,7 +38,7 @@ https://api-huacloud.com/sub?target=surfboard&insert=true&emoji=true&tfo=true&ud
 2. 找到当前正在使用的 `Flower_Trojan`（或机场默认名）配置
 3. 点编辑（笔图标） → 把 **URL** 字段整段替换为上面拼好的新订阅 URL
 4. 保存 → 下拉刷新 / 点右上角同步按钮拉取一次
-5. 在 **Policy Groups** 里检查策略组是否变成 `Proxies / HK / JP / SG / TW / US / Mainland / OpenAI / YouTube ...` 等自定义组，确认替换成功
+5. 在 **Policy Groups** 里检查策略组是否变成 `Proxies / HK / JP / SG / TW / US / Mainland / OpenAI / Misc / YouTube ...` 等自定义组，确认替换成功
 
 ## 后续怎么改规则
 
@@ -49,4 +50,5 @@ https://api-huacloud.com/sub?target=surfboard&insert=true&emoji=true&tfo=true&ud
 ## 相关文件
 
 - [`AI.list`](./AI.list)：AI 服务域名合集，被 `surfboard.ini` 通过 raw URL 引用进 `OpenAI` 组。改这里就能调整 AI 分流名单
+- [`Misc.list`](./Misc.list)：杂项分流合集，被 `surfboard.ini` 通过 raw URL 引用进 `Misc` 组。目前收纳 Twitter/X 相关域名，后续零散规则也可往这里加
 - `Global.list` / `global-fix.list`：早期为 Loon 维护的规则集，保留作历史参考，目前未被 `surfboard.ini` 直接引用

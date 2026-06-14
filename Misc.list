@@ -1,0 +1,34 @@
+#!name=Misc 杂项分流合集
+#!desc=收纳不便归入其他合集的零散分流规则，当前包含 Twitter(X) 全家桶
+#!author=ensomnia16 contributors
+#!homepage=https://github.com/ensomnia16/loon-rules
+#!date=2026-06-14 00:00:00
+#############################################
+
+# Twitter / X
+# 主站 + 短链 + 图片/视频 CDN + 广告/统计 + 开发者站点 + 直播(Periscope/Vine)
+DOMAIN-SUFFIX, twitter.com
+DOMAIN-SUFFIX, x.com
+DOMAIN-SUFFIX, t.co
+DOMAIN-SUFFIX, twimg.com
+DOMAIN-SUFFIX, twimg.co
+DOMAIN-SUFFIX, twttr.com
+DOMAIN-SUFFIX, twitter.biz
+DOMAIN-SUFFIX, twitter.jp
+DOMAIN-SUFFIX, twitterstat.us
+DOMAIN-SUFFIX, twitterinc.com
+DOMAIN-SUFFIX, twitteroauth.com
+DOMAIN-SUFFIX, twittercommunity.com
+DOMAIN-SUFFIX, twitterflightschool.com
+DOMAIN-SUFFIX, twitpic.com
+DOMAIN-SUFFIX, ads-twitter.com
+DOMAIN-SUFFIX, periscope.tv
+DOMAIN-SUFFIX, pscp.tv
+DOMAIN-SUFFIX, vine.co
+DOMAIN-KEYWORD, twitter
+DOMAIN-KEYWORD, twimg
+# Twitter / X 常用 IP 段（no-resolve 避免触发 DNS）
+IP-CIDR, 104.244.42.0/24, no-resolve
+IP-CIDR, 192.133.76.0/22, no-resolve
+IP-CIDR, 199.16.156.0/22, no-resolve
+IP-CIDR, 199.59.148.0/22, no-resolve
