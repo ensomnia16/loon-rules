@@ -52,3 +52,48 @@ https://api-huacloud.com/sub?target=surfboard&insert=true&emoji=true&tfo=true&ud
 - [`AI.list`](./AI.list)：AI 服务域名合集，被 `surfboard.ini` 通过 raw URL 引用进 `OpenAI` 组。改这里就能调整 AI 分流名单
 - [`Misc.list`](./Misc.list)：杂项分流合集，被 `surfboard.ini` 通过 raw URL 引用进 `Misc` 组。收纳 Twitter/X、Meta 社交（IG/Threads/FB/Messenger/WhatsApp）、TikTok、Discord、Reddit、Line、Twitch、Pixiv、Wikipedia、GitHub、Speedtest 等无独立合集的服务，全部共用 `Misc` 组的节点。后续零散规则也可往这里加
 - `Global.list` / `global-fix.list`：早期为 Loon 维护的规则集，保留作历史参考，目前未被 `surfboard.ini` 直接引用
+
+## Clash / Mihomo 配置（clash-verge / clash-meta）
+
+除了 Surfboard，本仓库还维护两份 Mihomo（Clash Meta）配置，分别面向两类客户端：
+
+- [`clash-verge.yaml`](./clash-verge.yaml)：桌面端 **Clash Verge Rev**。多了 `find-process-mode: strict`（按进程名分流）和一个默认关闭的 `tun` 段。
+- [`clash-meta.yaml`](./clash-meta.yaml)：**Mihomo 内核** / 移动端（ClashMetaForAndroid、FlClash 等）。
+
+两份配置结构一致，沿用同一套设计：
+
+- **节点** ← `proxy-providers` 从机场订阅拉取
+- **规则** ← `rule-providers` 从本公开仓库的 `.list` 拉取（`AI.list` / `Misc.list` + blackmatrix7），两份配置都实时共享
+- **主配置永不被机场覆盖**
+
+### 订阅 token 不进公开仓库 —— 用 secret gist 托管
+
+机场订阅 URL 里带 token，等同于你的付费订阅凭证。本仓库是 **public** 的，所以：
+
+- 仓库里的 `clash-verge.yaml` / `clash-meta.yaml` 是 **脱敏模板**，订阅 URL 是占位符 `https://YOUR-SUB-HOST:PORT/path?token=YOUR_TOKEN`，**不含真实 token**。
+- 真实配置（填好 token）放在一个 **secret gist** 里。secret gist 不会被搜索 / 列在你的主页，raw URL 含不可猜的哈希；同时 clash 客户端拉取它**无需任何鉴权**，比私有仓库更省事。
+- 规则 `.list` 仍留在本公开仓库（不是机密），gist 里的配置通过 raw URL 引用它们。
+
+> 为什么不直接用私有仓库：私有仓库的 raw 链接需要在 URL 里带会过期的 GitHub token，clash 客户端无法自动续期，反而不可用。secret gist 是“隐蔽 + 免鉴权”的折中。
+
+### 怎么搭
+
+1. 打开 <https://gist.github.com> → 新建 gist，添加两个文件 `clash-verge.yaml`、`clash-meta.yaml`，内容复制本仓库同名文件。
+2. 把每份里的 `proxy-providers.airport.url` 占位符换成你的真实订阅 URL。
+3. 选择 **Create secret gist**（不要选 public）。
+4. 进入 gist，点对应文件的 **Raw** 按钮，复制地址。注意用 **不带 commit 哈希** 的形式才会始终指向最新版本：
+   ```
+   https://gist.githubusercontent.com/<用户名>/<gist-id>/raw/clash-verge.yaml
+   https://gist.githubusercontent.com/<用户名>/<gist-id>/raw/clash-meta.yaml
+   ```
+5. 在客户端里用对应的 raw URL 作为订阅 / Profile 导入：
+   - Clash Verge Rev：Profiles → New → 粘贴 `clash-verge.yaml` 的 raw URL
+   - ClashMetaForAndroid / FlClash 等：新建配置 → URL 填 `clash-meta.yaml` 的 raw URL
+
+### 后续改配置
+
+- **改规则**：直接编辑本仓库的 `AI.list` / `Misc.list` 并 push，客户端下次刷新即生效（无需动 gist）。
+- **改策略组 / DNS / 节点订阅**：编辑 gist 里的 `clash-*.yaml`；记得把对应改动也同步回本仓库的脱敏模板，方便版本管理。
+- **换订阅 / token 泄露**：只需更新 gist 里的 `url` 一行；占位模板在公开仓库里始终不含真实 token。
+
+> 提示：因为 Profile 本身托管在 gist（而非机场），客户端里看不到机场的流量/到期信息（那来自机场订阅响应头）。节点和测速不受影响。
