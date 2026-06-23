@@ -1,0 +1,396 @@
+# =============================================================================
+#  Mihomo (Clash Meta) Config — Personal  [clash-verge 变体 / 桌面]
+#  Author: ensomnia16
+#  Repo:   github.com/ensomnia16/loon-rules   (规则源, 公开)
+#  Host:   本文件托管在 *secret gist* (含订阅 token, 切勿提交到公开仓库)
+#
+#  与 clash-meta 版的区别(桌面优化):
+#    - find-process-mode: strict  → 桌面可按进程名分流
+#    - 预置 TUN 段(默认关, 见下方)→ 需要全局虚拟网卡时打开,
+#      或直接用 Clash Verge Rev 界面的 "TUN 模式" 开关(GUI 会自动注入)
+#
+#  设计原则:
+#    - 节点 ← proxy-providers 从机场订阅拉取
+#    - 规则 ← rule-providers 从 GitHub 拉取(自己掌控)
+#    - 主配置(本文件)永不被覆盖
+# =============================================================================
+
+# ---------- Global ----------
+mixed-port: 7890
+allow-lan: false           # 桌面想共享给局域网其它设备时改 true
+mode: rule
+log-level: info
+ipv6: false
+unified-delay: true        # 测速去除握手时间, 数字更准
+tcp-concurrent: true       # 并发拨号, 加速冷启动
+find-process-mode: strict  # 桌面: 启用按进程名匹配 (PROCESS-NAME 规则)
+geodata-mode: true
+geo-auto-update: true
+geo-update-interval: 24
+external-controller: 127.0.0.1:9090
+
+profile:
+  store-selected: true     # 记住每个组上次选的节点
+  store-fake-ip: true
+
+# ---------- TUN (桌面全局代理, 默认关闭) ----------
+# 打开后接管系统所有流量, 需管理员权限 / Clash Verge 的 Service 模式。
+# 推荐做法: 保持这里 enable: false, 用 Clash Verge Rev 界面的 "TUN 模式"
+# 开关来控制(GUI 会自动注入并管理虚拟网卡); 仅在裸 mihomo 内核下才手动改 true。
+tun:
+  enable: false
+  stack: mixed
+  auto-route: true
+  auto-redirect: true
+  auto-detect-interface: true
+  dns-hijack:
+    - any:53
+
+# ---------- DNS ----------
+# fake-ip 模式 + 国内 DoH:
+#   国内域名: alidns 返回真实国内 IP, 走 DIRECT 直连
+#   海外域名: 走代理时由代理服务器重新解析, 本地 DNS 只是兜底
+dns:
+  enable: true
+  ipv6: false
+  listen: 0.0.0.0:1053
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter:
+    - '*.lan'
+    - '*.local'
+    - '+.market.xiaomi.com'
+    - 'localhost.ptlogin2.qq.com'
+    - '+.srv.nintendo.net'
+    - '+.stun.playstation.net'
+    - 'xbox.*.microsoft.com'
+    - '*.xboxlive.com'
+    - 'msftconnecttest.com'
+    - 'msftncsi.com'
+    - 'time.*.com'
+    - 'time.*.gov'
+    - 'time.*.edu.cn'
+    - 'time.*.apple.com'
+    - 'stun.*.*'
+    - 'stun.*.*.*'
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  nameserver:
+    - https://dns.alidns.com/dns-query
+    - https://doh.pub/dns-query
+  proxy-server-nameserver:
+    - https://dns.alidns.com/dns-query
+
+# =============================================================================
+# 节点订阅 — 机场只拿节点, 不要它的规则
+# =============================================================================
+proxy-providers:
+  airport:
+    type: http
+    # ⚠️ 脱敏模板: 真实订阅(含 token)只放在 secret gist 的同名文件里, 切勿提交到本公开仓库!
+    #    在 gist 副本里把下面这行换成你的真实订阅 URL。
+    url: 'https://YOUR-SUB-HOST:PORT/path?token=YOUR_TOKEN'
+    interval: 86400
+    path: ./providers/airport.yaml
+    health-check:
+      enable: true
+      url: http://www.gstatic.com/generate_204
+      interval: 300
+
+# =============================================================================
+# 规则订阅 — 全部走 GitHub, 自己控制
+# =============================================================================
+rule-providers:
+  # ---- 你自己维护的 AI 合集 ----
+  ai:
+    type: http
+    behavior: classical
+    format: text
+    url: 'https://raw.githubusercontent.com/ensomnia16/loon-rules/main/AI.list'
+    interval: 86400
+    path: ./rules/ai.list
+  Misc:
+    type: http
+    behavior: classical
+    format: text
+    url: 'https://raw.githubusercontent.com/ensomnia16/loon-rules/main/Misc.list'
+    interval: 86400
+    path: ./rules/Misc.list
+  # ---- 流媒体 / 应用 (blackmatrix7) ----
+  youtube:
+    type: http
+    behavior: classical
+    format: text
+    url: 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/YouTube/YouTube.list'
+    interval: 86400
+    path: ./rules/youtube.list
+
+  disney:
+    type: http
+    behavior: classical
+    format: text
+    url: 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Disney/Disney.list'
+    interval: 86400
+    path: ./rules/disney.list
+
+  netflix:
+    type: http
+    behavior: classical
+    format: text
+    url: 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Netflix/Netflix.list'
+    interval: 86400
+    path: ./rules/netflix.list
+
+  hbo:
+    type: http
+    behavior: classical
+    format: text
+    url: 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/HBO/HBO.list'
+    interval: 86400
+    path: ./rules/hbo.list
+
+  bahamut:
+    type: http
+    behavior: classical
+    format: text
+    url: 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Bahamut/Bahamut.list'
+    interval: 86400
+    path: ./rules/bahamut.list
+
+  bilibili:
+    type: http
+    behavior: classical
+    format: text
+    url: 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/BiliBili/BiliBili.list'
+    interval: 86400
+    path: ./rules/bilibili.list
+
+  spotify:
+    type: http
+    behavior: classical
+    format: text
+    url: 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Spotify/Spotify.list'
+    interval: 86400
+    path: ./rules/spotify.list
+
+  steam:
+    type: http
+    behavior: classical
+    format: text
+    url: 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Steam/Steam.list'
+    interval: 86400
+    path: ./rules/steam.list
+
+  telegram:
+    type: http
+    behavior: classical
+    format: text
+    url: 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Telegram/Telegram.list'
+    interval: 86400
+    path: ./rules/telegram.list
+
+  paypal:
+    type: http
+    behavior: classical
+    format: text
+    url: 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/PayPal/PayPal.list'
+    interval: 86400
+    path: ./rules/paypal.list
+
+  apple:
+    type: http
+    behavior: classical
+    format: text
+    url: 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Apple/Apple.list'
+    interval: 86400
+    path: ./rules/apple.list
+
+  microsoft:
+    type: http
+    behavior: classical
+    format: text
+    url: 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Microsoft/Microsoft.list'
+    interval: 86400
+    path: ./rules/microsoft.list
+
+  google:
+    type: http
+    behavior: classical
+    format: text
+    url: 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Google/Google.list'
+    interval: 86400
+    path: ./rules/google.list
+
+  # ---- 直连 ----
+  lan:
+    type: http
+    behavior: classical
+    format: text
+    url: 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Lan/Lan.list'
+    interval: 86400
+    path: ./rules/lan.list
+
+  cnmax:
+    type: http
+    behavior: classical
+    format: text
+    url: 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/ChinaMax/ChinaMax.list'
+    interval: 86400
+    path: ./rules/cnmax.list
+
+# =============================================================================
+# 策略组
+# =============================================================================
+proxy-groups:
+  # 主选择组
+  - name: Proxies
+    type: select
+    proxies: [Auto, HK, JP, SG, TW, US]
+    use: [airport]
+
+  # AI 服务 — 默认 US/JP 优先
+  - name: AI
+    type: select
+    proxies: [Proxies, US, JP, SG, TW]
+  - name: Misc
+    type: select
+    proxies: [Proxies, US, JP, SG, TW]
+
+  # 流媒体
+  - name: YouTube
+    type: select
+    proxies: [Proxies, HK, JP, SG, TW, US]
+  - name: Disney
+    type: select
+    proxies: [Proxies, HK, JP, SG, TW, US]
+  - name: Netflix
+    type: select
+    proxies: [Proxies, HK, JP, SG, TW, US]
+  - name: Hbomax
+    type: select
+    proxies: [Proxies, HK, JP, SG, TW, US]
+  - name: Bahamut
+    type: select
+    proxies: [TW, Proxies, HK, JP, SG, US]   # 巴哈默认 TW
+  - name: Bilibili
+    type: select
+    proxies: [DIRECT, HK, TW, Mainland, Proxies]   # B 站默认直连
+
+  # 应用
+  - name: Spotify
+    type: select
+    proxies: [Proxies, DIRECT, HK, JP, SG, TW, US]
+  - name: Steam
+    type: select
+    proxies: [DIRECT, Proxies, HK, JP, SG, TW, US]
+  - name: Telegram
+    type: select
+    proxies: [Proxies, HK, JP, SG, TW, US]
+  - name: Google
+    type: select
+    proxies: [Proxies, HK, JP, SG, TW, US]
+  - name: Microsoft
+    type: select
+    proxies: [DIRECT, Proxies, HK, JP, SG, TW, US]
+  - name: PayPal
+    type: select
+    proxies: [DIRECT, Proxies, HK, JP, SG, TW, US]
+  - name: Apple
+    type: select
+    proxies: [DIRECT, Proxies, HK, JP, SG, TW, US]   # 国区 Apple Music 默认直连
+
+  # 兜底
+  - name: Final
+    type: select
+    proxies: [Proxies, DIRECT]
+
+  # ============= 地区组 (url-test 自动选最快) =============
+  - name: Auto
+    type: url-test
+    use: [airport]
+    url: 'http://www.gstatic.com/generate_204'
+    interval: 300
+    tolerance: 50
+
+  - name: HK
+    type: url-test
+    use: [airport]
+    filter: '(?i)(🇭🇰|HK|Hong[ ]?Kong|香港)'
+    url: 'http://www.gstatic.com/generate_204'
+    interval: 300
+    tolerance: 50
+
+  - name: JP
+    type: url-test
+    use: [airport]
+    filter: '(?i)(🇯🇵|JP|Japan|日本|东京|大阪)'
+    url: 'http://www.gstatic.com/generate_204'
+    interval: 300
+    tolerance: 50
+
+  - name: SG
+    type: select
+    use: [airport]
+    filter: '(?i)(🇸🇬|SG|Singapore|新加坡|狮城)'
+    url: 'http://www.gstatic.com/generate_204'
+    interval: 300
+    tolerance: 50
+
+  - name: TW
+    type: url-test
+    use: [airport]
+    filter: '(?i)(🇹🇼|TW|Taiwan|台湾|台北|台中|台南|高雄)'
+    url: 'http://www.gstatic.com/generate_204'
+    interval: 300
+    tolerance: 50
+
+  - name: US
+    type: url-test
+    use: [airport]
+    filter: '(?i)(🇺🇸|US|United[ ]?States|美国|洛杉矶|纽约|圣何塞|硅谷|西雅图)'
+    url: 'http://www.gstatic.com/generate_204'
+    interval: 300
+    tolerance: 50
+
+  # Mainland: 仅匹配明确的"回国/大陆"关键词, 避免把 "🇨🇳 台湾" 节点误吞进来
+  # 你当前机场没有真正的回国节点, 此组会是空的; 换机场或加自建回国节点时会自动填充
+  - name: Mainland
+    type: url-test
+    use: [airport]
+    filter: '(?i)(回国|大陆|京沪|北京|上海|广州|深圳|杭州)'
+    url: 'http://www.gstatic.com/generate_204'
+    interval: 300
+    tolerance: 50
+
+# =============================================================================
+# 规则 (从上到下, 先匹配先生效)
+# =============================================================================
+rules:
+  # ---- AI 服务 (最高优先级) ----
+  - RULE-SET,ai,AI
+  - RULE-SET,Misc,Misc
+
+  # ---- 流媒体 / 应用 ----
+  - RULE-SET,youtube,YouTube
+  - RULE-SET,disney,Disney
+  - RULE-SET,netflix,Netflix
+  - RULE-SET,hbo,Hbomax
+  - RULE-SET,bahamut,Bahamut
+  - RULE-SET,bilibili,Bilibili
+  - RULE-SET,spotify,Spotify
+  - RULE-SET,steam,Steam
+  - RULE-SET,telegram,Telegram
+  - RULE-SET,paypal,PayPal
+  - RULE-SET,apple,Apple
+  - RULE-SET,microsoft,Microsoft
+  - RULE-SET,google,Google
+
+  # ---- 直连 ----
+  - RULE-SET,lan,DIRECT
+  - RULE-SET,cnmax,DIRECT
+  - GEOIP,LAN,DIRECT,no-resolve
+  - GEOIP,CN,DIRECT,no-resolve
+
+  # ---- 兜底 ----
+  - MATCH,Final
