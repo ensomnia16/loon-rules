@@ -30,6 +30,9 @@ DOMAIN-SUFFIX, oaistatsig.com
 DOMAIN-SUFFIX, openai.org
 
 # Apple Intelligence
+# Explicit Siri service namespace and production API; no broad siri keyword.
+DOMAIN-SUFFIX,siri.apple.com
+DOMAIN,api-siri-prod.apple.com
 DOMAIN-SUFFIX,apple-relay.apple.com
 DOMAIN-SUFFIX,apple-relay.fastly-edge.com
 DOMAIN-SUFFIX,apple-relay.cloudflare.com
