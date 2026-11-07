@@ -5,30 +5,46 @@ on:
     - cron: '0 2 * * *'
   workflow_dispatch:
 
+concurrency:
+  group: sync-global-main
+  cancel-in-progress: false
+
 jobs:
   sync:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          ref: main
 
-      - name: Fetch and filter Global.list
-        run: |
-          curl -s \
-            -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
-            -H "Accept: text/plain,*/*" \
-            -H "Accept-Language: zh-CN,zh;q=0.9" \
-            -H "Referer: https://yfamilys.com/" \
-            "https://yfamilys.com/rule/Global.list" \
-            | grep -vx "DOMAIN-SUFFIX,com" \
-            > Global.list
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Test sync safeguards
+        run: python -B -m unittest discover -s tests -v
+
+      # Global.list is an upstream mirror. AI.list and global-fix.list are
+      # curated independently; NEVER regenerate or stage them in this job.
+      - name: Fetch, validate and atomically update Global.list
+        run: python -B scripts/sync_global.py
 
       - name: Commit if changed
         run: |
+          set -euo pipefail
+          if git diff --quiet -- Global.list; then
+            echo "No changes"
+            exit 0
+          fi
           git config user.email "action@github.com"
           git config user.name "GitHub Action"
-          git add Global.list
-          git diff --cached --quiet && echo "No changes" && exit 0
+          git add -- Global.list
           git commit -m "sync: $(date -u '+%Y-%m-%d %H:%M UTC')"
-          git push
+          git push origin HEAD:main
