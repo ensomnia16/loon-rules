@@ -120,6 +120,9 @@ DOMAIN-SUFFIX, muse.ai
 DOMAIN-SUFFIX, metaaiusercontent.com
 DOMAIN-SUFFIX, ecto1usercontent.com
 DOMAIN-SUFFIX, meta-agents-apps.workers.dev
+DOMAIN-SUFFIX, museai.com
+DOMAIN-SUFFIX, ecto1.ai
+DOMAIN-SUFFIX, metaaivm.com
 
 # Perplexity AI
 DOMAIN-SUFFIX, pplx.ai
