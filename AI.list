@@ -2,7 +2,7 @@
 #!desc=包含上游AI规则并补充常见AI服务
 #!author=lodepuly, ensomnia16 contributors
 #!homepage=https://github.com/ensomnia16/loon-rules
-#!date=2026-10-25 16:18:48
+#!date=2026-11-19 22:14:00
 #############################################
 
 # Source: https://raw.githubusercontent.com/fmz200/wool_scripts/main/Loon/rule/AI.list
@@ -239,3 +239,6 @@ DOMAIN-SUFFIX, phind.com
 DOMAIN-SUFFIX, notion.so
 DOMAIN-SUFFIX, notion.com
 DOMAIN-SUFFIX, glean.com
+
+# Yab (Yet Another Browser) remote sync
+DOMAIN-SUFFIX, yab-sync.21st.workers.dev
